@@ -1,9 +1,9 @@
 /*= -*- c-basic-offset: 4; indent-tabs-mode: nil; -*-
  *
  * librsync -- library for network deltas
- * $Id: sumset.c,v 1.22 2003/06/12 05:47:23 wayned Exp $
+ * $Id$
  * 
- * Copyright (C) 1999, 2000, 2001 by Martin Pool <mbp@samba.org>
+ * Copyright (C) 1999, 2000, 2001 by Martin Pool <mbp@sourcefrog.net>
  * Copyright (C) 1999 by Andrew Tridgell
  * 
  * This program is free software; you can redistribute it and/or modify
@@ -21,7 +21,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <config.h>
+#include "config.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -61,7 +61,7 @@ void
 rs_sumset_dump(rs_signature_t const *sums)
 {
         int i;
-        char        strong_hex[RS_MD4_LENGTH * 3];
+        char        strong_hex[RS_MAX_STRONG_SUM_LENGTH * 3];
     
         rs_log(RS_LOG_INFO, 
                 "sumset info: block_len=%d, file length=%lu, "

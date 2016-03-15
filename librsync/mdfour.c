@@ -1,9 +1,9 @@
 /*= -*- c-basic-offset: 4; indent-tabs-mode: nil; -*-
  *
  * librsync -- the library for network deltas
- * $Id: mdfour.c,v 1.36 2004/09/10 02:07:12 mbp Exp $
+ * $Id$
  * 
- * Copyright (C) 2000, 2001 by Martin Pool <mbp@samba.org>
+ * Copyright (C) 2000, 2001 by Martin Pool <mbp@sourcefrog.net>
  * Copyright (C) 1997-1999 by Andrew Tridgell
  * Copyright (C) 2002, 2003 by Donovan Baarda <abo@minkirri.apana.org.au> 
  * 
@@ -41,7 +41,7 @@
  *   (e.g. ia64, pa-risc).
  */
 
-#include <config.h>
+#include "config.h"
 
 #include <stdlib.h>
 #include <string.h>

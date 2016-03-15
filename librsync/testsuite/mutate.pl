@@ -1,9 +1,9 @@
 #! /usr/bin/perl -w
 
 # librsync -- the library for network deltas
-# $Id: mutate.pl,v 1.1 2002/01/25 21:08:25 bje Exp $
+# $Id$
 #
-# Copyright (C) 1999, 2000 by Martin Pool <mbp@samba.org>
+# Copyright (C) 1999, 2000 by Martin Pool <mbp@sourcefrog.net>
 # Copyright (C) 1999 by Andrew Tridgell <tridge@samba.org>
 #
 # This program is free software; you can redistribute it and/or

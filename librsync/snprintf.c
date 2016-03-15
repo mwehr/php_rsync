@@ -1,4 +1,4 @@
-/* $Id: snprintf.c,v 1.6 2001/02/27 03:22:05 mbp Exp $ */
+/* $Id$ */
 
 /*
  * Copyright Patrick Powell 1995

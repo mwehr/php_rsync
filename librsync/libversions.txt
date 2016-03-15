@@ -1,6 +1,4 @@
-libtool versions for librsync
-
-   So, libtool library versions are described by three integers:
+libtool versions for librsync, described by three integers:
 
 CURRENT
      The most recent interface number that this library implements.
@@ -21,3 +19,5 @@ RELEASE  CURRENT  REVISION  AGE   COMMENTS
 0.9.4	 1	  1	    0	   
 0.9.5	 1	  1	    0
 0.9.6	 1	  2	    0     refined and debugged
+1.0.0    2        0         0     add BLAKE2 as default
+1.0.1    2        0         0     Better performance on large files

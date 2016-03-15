@@ -1,9 +1,9 @@
 /*= -*- c-basic-offset: 4; indent-tabs-mode: nil; -*-
  *
  * librsync -- generate and apply network deltas
- * $Id: trace.h,v 1.28 2004/09/10 02:48:58 mbp Exp $
+ * $Id$
  * 
- * Copyright (C) 2000, 2001, 2004 by Martin Pool <mbp@samba.org>
+ * Copyright (C) 2000, 2001, 2004 by Martin Pool <mbp@sourcefrog.net>
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by

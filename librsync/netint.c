@@ -1,9 +1,9 @@
 /*= -*- c-basic-offset: 4; indent-tabs-mode: nil; -*-
  *
  * librsync -- library for network deltas
- * $Id: netint.c,v 1.27 2004/09/10 02:48:58 mbp Exp $
+ * $Id$
  * 
- * Copyright (C) 1999, 2000, 2001 by Martin Pool <mbp@samba.org>
+ * Copyright (C) 1999, 2000, 2001 by Martin Pool <mbp@sourcefrog.net>
  * Copyright (C) 1999 by Andrew Tridgell <tridge@samba.org>
  * 
  * This program is free software; you can redistribute it and/or
@@ -47,7 +47,7 @@
  * 64-bit integers, since there seems to be no ntohs() analog.
  */
 
-#include <config.h>
+#include "config.h"
 
 #include <assert.h>
 #include <sys/types.h>
@@ -180,5 +180,6 @@ int rs_int_len(rs_long_t val)
         return 8;
     else {
         rs_fatal("can't encode integer " PRINTF_FORMAT_U64 " yet", PRINTF_CAST_U64(val));
+        return -1;
     }
 }

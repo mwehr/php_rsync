@@ -1,8 +1,8 @@
 /*= -*- c-basic-offset: 4; indent-tabs-mode: nil; -*-
  * librsync -- dynamic caching and delta update in HTTP
- * $Id: isprefix.h,v 1.5 2001/03/05 07:09:37 mbp Exp $
+ * $Id$
  * 
- * Copyright (C) 2000, 2001 by Martin Pool <mbp@samba.org>
+ * Copyright (C) 2000, 2001 by Martin Pool <mbp@sourcefrog.net>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License

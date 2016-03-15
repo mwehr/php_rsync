@@ -1,9 +1,9 @@
 /*= -*- c-basic-offset: 4; indent-tabs-mode: nil; -*-
  *
  * librsync -- library for network deltas
- * $Id: util.h,v 1.14 2001/03/12 02:23:09 mbp Exp $
+ * $Id$
  * 
- * Copyright (C) 1999, 2000, 2001 by Martin Pool <mbp@samba.org>
+ * Copyright (C) 1999, 2000, 2001 by Martin Pool <mbp@sourcefrog.net>
  * Copyright (C) 1999 by Andrew Tridgell <tridge@samba.org>
  * 
  * This program is free software; you can redistribute it and/or
@@ -37,7 +37,7 @@ void rs_bzero(void *buf, size_t size);
 
 #ifdef __GNUC__
 #  define UNUSED(x) x __attribute__((unused))
-#elif __LCLINT__
+#elif defined(__LCLINT__) || defined(S_SPLINT_S)
 #  define UNUSED(x) /*@unused@*/ x
 #else				/* !__GNUC__ && !__LCLINT__ */
 #  define UNUSED(x) x

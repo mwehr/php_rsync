@@ -2,17 +2,17 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.53)
-AC_INIT([librsync],[0.9.7])
-AC_REVISION([$Revision: 1.12 $])
-AC_COPYRIGHT([Copyright (C) 1999, 2000, 01, 02, 04 by Martin Pool <mbp@samba.org>])
+AC_INIT([librsync],[1.0.1])
+AC_COPYRIGHT([Copyright (C) 1999-2014 by Martin Pool <mbp@sourcefrog.net>])
 AC_CONFIG_SRCDIR([trace.c])
-AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE
+AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_MACRO_DIR([m4])
+AM_INIT_AUTOMAKE([foreign])
 
 # GNU library versioning: This is NOT the librsync release number.
 # See libversions.txt and the libtool manual for an explanation of the
 # library versioning
-librsync_libversion=1:2:0
+librsync_libversion=2:0:0
 
 # Disable shared libs by default.
 AC_DISABLE_SHARED
@@ -29,7 +29,7 @@ AC_PROG_LIBTOOL
 # Checks for libraries.
 AC_CHECK_LIB(z, deflate)
 AC_CHECK_LIB(bz2, BZ2_bzCompress)
-AC_CHECK_LIB(popt, poptGetContext,,[BUILD_POPT='popt/libpopt.a'; CFLAGS="$CFLAGS -I$srcdir/popt"])
+AC_CHECK_LIB(popt, poptGetContext, [], AC_MSG_WARN([cannot find libpopt: won't be able to run tests or build rdiff]))
 
 # Checks for header files.
 AC_FUNC_ALLOCA
@@ -140,7 +140,6 @@ AC_CONFIG_FILES([
   Makefile 
   doc/Makefile 
   doc/Doxyfile 
-  popt/Makefile 
   testsuite/Makefile
   librsync-config.h])
 AC_OUTPUT

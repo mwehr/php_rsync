@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 # Copyright (C) 2002 by Ben Elliston <bje@redhat.com>
-# $Id: Makefile.am,v 1.2 2003/03/20 09:19:13 abo Exp $
+# $Id$
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public License
@@ -24,9 +24,7 @@ EXTRA_DIST = $(man_MANS)
 
 # Doxygen API documentation
 
-sites=front.linuxcare.com.au:/var/www/projects/rproxy \
-	rproxy.sourceforge.net:/home/groups/rproxy/htdocs \
-	rproxy.samba.org:/space/httpd/rproxy/htdocs
+sites=
 
 .PHONY: do-doxy upload-doxy
 

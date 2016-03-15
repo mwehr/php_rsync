@@ -1,9 +1,9 @@
 /*= -*- c-basic-offset: 4; indent-tabs-mode: nil; -*-
  *
  * librsync -- library for network deltas
- * $Id: trace.c,v 1.50 2003/08/03 14:36:09 abo Exp $
+ * $Id$
  *
- * Copyright (C) 2000, 2001 by Martin Pool <mbp@samba.org>
+ * Copyright (C) 2000, 2001 by Martin Pool <mbp@sourcefrog.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -34,7 +34,7 @@
  * function name.
  */
 
-#include <config.h>
+#include "config.h"
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #else

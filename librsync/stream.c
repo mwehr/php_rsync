@@ -1,9 +1,8 @@
 /*= -*- c-basic-offset: 4; indent-tabs-mode: nil; -*-
  *
  * librsync -- dynamic caching and delta update in HTTP
- * $Id: stream.c,v 1.17 2004/09/10 01:37:56 mbp Exp $
  * 
- * Copyright (C) 2000, 2001 by Martin Pool <mbp@samba.org>
+ * Copyright (C) 2000, 2001 by Martin Pool <mbp@sourcefrog.net>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -84,7 +83,7 @@
 /* TODO: Return errors rather than aborting if something goes wrong.  */
 
 
-#include <config.h>
+#include "config.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -95,8 +94,6 @@
 #include "stream.h"
 #include "util.h"
 #include "trace.h"
-
-static const int RS_STREAM_DOGTAG = 2001125;
 
 
 /**

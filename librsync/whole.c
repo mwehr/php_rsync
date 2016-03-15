@@ -1,9 +1,8 @@
 /*= -*- c-basic-offset: 4; indent-tabs-mode: nil; -*-
  *
  * librsync -- the library for network deltas
- * $Id: whole.c,v 1.23 2003/06/12 05:47:23 wayned Exp $
  *
- * Copyright (C) 2000, 2001 by Martin Pool <mbp@samba.org>
+ * Copyright 2000, 2001, 2014, 2015 by Martin Pool <mbp@sourcefrog.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -30,7 +29,7 @@
 
 
 
-#include <config.h>
+#include "config.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -100,16 +99,21 @@ rs_whole_run(rs_job_t *job, FILE *in_file, FILE *out_file)
  *
  * \param strong_len truncated length of strong checksums, in bytes
  *
+ * \param sig_magic A signature magic number indicating 
+ * what format to use.
+ *
  * \sa rs_sig_begin()
  */
 rs_result
 rs_sig_file(FILE *old_file, FILE *sig_file, size_t new_block_len,
-            size_t strong_len, rs_stats_t *stats)
+            size_t strong_len,
+	    rs_magic_number sig_magic,
+	    rs_stats_t *stats)
 {
     rs_job_t        *job;
     rs_result       r;
 
-    job = rs_sig_begin(new_block_len, strong_len);
+    job = rs_sig_begin(new_block_len, strong_len, sig_magic);
     r = rs_whole_run(job, old_file, sig_file);
     if (stats)
         memcpy(stats, &job->stats, sizeof *stats);

@@ -1,9 +1,8 @@
 /*= -*- c-basic-offset: 4; indent-tabs-mode: nil; -*-
  *
  * librsync -- library for network deltas
- * $Id: delta.c,v 1.36 2004/09/10 02:48:57 mbp Exp $
  *
- * Copyright (C) 2000, 2001 by Martin Pool <mbp@samba.org>
+ * Copyright (C) 2000, 2001 by Martin Pool <mbp@sourcefrog.net>
  * Copyright (C) 2003 by Donovan Baarda <abo@minkirri.apana.org.au> 
  *
  * This program is free software; you can redistribute it and/or modify
@@ -63,7 +62,7 @@
  */
 
 
-#include <config.h>
+#include "config.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -80,6 +79,8 @@
 #include "types.h"
 #include "rollsum.h"
 
+const int RS_MD4_SUM_LENGTH = 16;
+const int RS_BLAKE2_SUM_LENGTH = 32;
 
 /**
  * 2002-06-26: Donovan Baarda
@@ -125,12 +126,12 @@ static rs_result rs_delta_s_scan(rs_job_t *job);
 static rs_result rs_delta_s_flush(rs_job_t *job);
 static rs_result rs_delta_s_end(rs_job_t *job);
 void rs_getinput(rs_job_t *job);
-inline int rs_findmatch(rs_job_t *job, rs_long_t *match_pos, size_t *match_len);
-inline rs_result rs_appendmatch(rs_job_t *job, rs_long_t match_pos, size_t match_len);
-inline rs_result rs_appendmiss(rs_job_t *job, size_t miss_len);
-inline rs_result rs_appendflush(rs_job_t *job);
-inline rs_result rs_processmatch(rs_job_t *job);
-inline rs_result rs_processmiss(rs_job_t *job);
+static inline int rs_findmatch(rs_job_t *job, rs_long_t *match_pos, size_t *match_len);
+static inline rs_result rs_appendmatch(rs_job_t *job, rs_long_t match_pos, size_t match_len);
+static inline rs_result rs_appendmiss(rs_job_t *job, size_t miss_len);
+static inline rs_result rs_appendflush(rs_job_t *job);
+static inline rs_result rs_processmatch(rs_job_t *job);
+static inline rs_result rs_processmiss(rs_job_t *job);
 
 /**
  * \brief Get a block of data if possible, and see if it matches.
@@ -164,7 +165,7 @@ static rs_result rs_delta_s_scan(rs_job_t *job)
             result=rs_appendmiss(job,1);
             if (rs_roll_paranoia) {
                 RollsumInit(&test);
-                RollsumUpdate(&test,job->scoop_next+job->scoop_pos,
+                RollsumUpdate(&test, job->scoop_next+job->scoop_pos,
                               job->block_len);
                 if (RollsumDigest(&test) != RollsumDigest(&job->weak_sum)) {
                     rs_fatal("mismatch between rolled sum %#x and check %#x",
@@ -444,6 +445,10 @@ static rs_result rs_delta_s_header(rs_job_t *job)
  */
 rs_job_t *rs_delta_begin(rs_signature_t *sig)
 {
+    /* Caller must have called rs_build_hash_table() by now */
+    if (!sig->tag_table)
+        rs_fatal("Must call rs_build_hash_table() prior to calling rs_delta_begin()");
+
     rs_job_t *job;
 
     job = rs_job_new("delta", rs_delta_s_header);
@@ -458,7 +463,7 @@ rs_job_t *rs_delta_begin(rs_signature_t *sig)
     }
 
     job->strong_sum_len = sig->strong_sum_len;
-    if (job->strong_sum_len < 0  ||  job->strong_sum_len > RS_MD4_LENGTH) {
+    if (job->strong_sum_len < 0  ||  job->strong_sum_len > RS_MAX_STRONG_SUM_LENGTH) {
         rs_log(RS_LOG_ERR, "unreasonable strong_sum_len %d in signature",
                job->strong_sum_len);
         return NULL;
@@ -466,5 +471,4 @@ rs_job_t *rs_delta_begin(rs_signature_t *sig)
 
     return job;
 }
-
 

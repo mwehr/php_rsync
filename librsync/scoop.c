@@ -1,9 +1,8 @@
 /*=                    -*- c-basic-offset: 4; indent-tabs-mode: nil; -*-
  *
  * librsync -- the library for network deltas
- * $Id: scoop.c,v 1.28 2004/09/10 02:48:58 mbp Exp $
  * 
- * Copyright (C) 2000, 2001 by Martin Pool <mbp@samba.org>
+ * Copyright (C) 2000, 2001 by Martin Pool <mbp@sourcefrog.net>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -59,7 +58,7 @@
                                |   -- Shihad, `The General Electric'.
                                */ 
 
-#include <config.h>
+#include "config.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -85,7 +84,7 @@ void rs_scoop_input(rs_job_t *job, size_t len)
 
     if (job->scoop_alloc < len) {
         /* need to allocate a new buffer, too */
-        char *newbuf;
+        rs_byte_t *newbuf;
         int newsize = 2 * len;
         newbuf = rs_alloc(newsize, "scoop buffer");
         if (job->scoop_avail)

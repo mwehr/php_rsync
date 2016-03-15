@@ -1,9 +1,8 @@
 /*= -*- c-basic-offset: 4; indent-tabs-mode: nil; -*-
  *
  * librsync -- the library for network deltas
- * $Id: buf.c,v 1.22 2003/12/16 00:10:55 abo Exp $
  * 
- * Copyright (C) 2000, 2001 by Martin Pool <mbp@samba.org>
+ * Copyright (C) 2000, 2001 by Martin Pool <mbp@sourcefrog.net>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -22,7 +21,6 @@
 
                               /*
                                | Pick a window, Jimmy, you're leaving.
-                               |   -- Martin Schwenke, regularly
                                */
 
 
@@ -40,7 +38,7 @@
  */
 
 
-#include <config.h>
+#include "config.h"
 #include <sys/types.h>
 
 #include <assert.h>
@@ -213,7 +211,7 @@ rs_result rs_file_copy_cb(void *arg, rs_long_t pos, size_t *len, void **buf)
 
     got = fread(*buf, 1, *len, f);
     if (got == -1) {
-        rs_error(strerror(errno));
+        rs_error("read error: %s", strerror(errno));
         return RS_IO_ERROR;
     } else if (got == 0) {
         rs_error("unexpected eof on fd%d", fileno(f));

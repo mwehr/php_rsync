@@ -24,7 +24,7 @@ if test "$PHP_RSYNC" != "no"; then
       librsync_sources="librsync/prototab.c librsync/base64.c librsync/buf.c \
       librsync/checksum.c librsync/command.c librsync/delta.c librsync/emit.c \
       librsync/fileutil.c librsync/hex.c librsync/job.c librsync/mdfour.c \
-      librsync/mksum.c librsync/msg.c librsync/netint.c \
+      librsync/blake2b-ref.c librsync/mksum.c librsync/msg.c librsync/netint.c \
       librsync/patch.c librsync/readsums.c \
       librsync/rollsum.c librsync/scoop.c librsync/search.c librsync/stats.c \
       librsync/stream.c librsync/sumset.c librsync/trace.c librsync/tube.c \
@@ -36,7 +36,7 @@ if test "$PHP_RSYNC" != "no"; then
       AC_DEFINE(HAVE_BUNDLED_RSYNC, 1, [ ])
       AC_CHECK_FUNCS([snprintf vsnprintf], [], [])
 
-      dnl AC_CHECK_HEADERS([librsync/prototab.h librsync/buf.h librsync/checksum.h librsync/command.h librsync/emit.h librsync/fileutil.h librsync/job.h librsync/mdfour.h librsync/netint.h librsync/protocol.h librsync/librsync.h librsync/librsync-config.h librsync/rollsum.h librsync/search.h librsync/stream.h librsync/sumset.h librsync/trace.h librsync/types.h librsync/util.h librsync/whole.h librsync/snprintf.h], [], [])
+      dnl AC_CHECK_HEADERS([librsync/prototab.h librsync/buf.h librsync/checksum.h librsync/command.h librsync/emit.h librsync/fileutil.h librsync/job.h librsync/mdfour.h librsync/blake2.h librsync/netint.h librsync/protocol.h librsync/librsync.h librsync/librsync-config.h librsync/rollsum.h librsync/search.h librsync/stream.h librsync/sumset.h librsync/trace.h librsync/types.h librsync/util.h librsync/whole.h librsync/snprintf.h], [], [])
     else
       AC_MSG_RESULT([not found])
       # search default path list

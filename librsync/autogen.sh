@@ -1,7 +1,6 @@
 #! /bin/sh
 
-# Copyright (C) 2000, 2001 by Martin Pool
-# $Id: autogen.sh,v 1.18 2003/06/12 05:50:00 wayned Exp $
+# Copyright 2000, 2001, 2014 by Martin Pool
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public License
@@ -18,10 +17,10 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 
-# This script generates everything necessary to build librsync from
-# CVS.  It is based on the file of the same name in glib.  It is not
-# needed for distributed versions, because all the necessary files are
-# included in the tarball by autoconf.
+# This script generates everything necessary to build librsync from a bare
+# source tree.  It is based on the file of the same name in glib.  It is not
+# needed for distributed versions, because all the necessary files are included
+# in the tarball by autoconf.
 
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
@@ -65,11 +64,17 @@ test -f "$changelog" && {
 	DIE=1
 }
 
-(libtool --version) < /dev/null > /dev/null 2>&1 || {
+if [ -z "$LIBTOOLIZE" ]
+then
+        LIBTOOLIZE=libtoolize
+fi
+
+($LIBTOOLIZE --version) < /dev/null > /dev/null 2>&1 || {
 	echo
 	echo "You must have libtool installed to compile $PROJECT."
 	echo "Download the appropriate package for your distribution,"
 	echo "or go to http://www.gnu.org/software/libtool/"
+	echo "You can set $LIBTOOLIZE."
 	DIE=1
 }
 
@@ -88,7 +93,7 @@ esac
 
 set -x
 aclocal $ACLOCAL_FLAGS
-libtoolize --force
+$LIBTOOLIZE --force
 autoheader
 automake -a --foreign $am_opt
 autoconf

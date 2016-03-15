@@ -60,11 +60,11 @@ PHP_METHOD(Rsync, setLogLevel);
 PHP_METHOD(Rsync, getError);
 
 
-
 ZEND_BEGIN_MODULE_GLOBALS(rsync)
 	char *tmp_dir;
 	long block_length;
 	long strong_length;
+	long hash_type;
 	rs_stats_t stats;
 	rs_result ret;
 	struct php_rsync_log_callback {
@@ -80,6 +80,7 @@ struct ze_rsync_main_obj {
 	zend_object zo;
 	long block_length;
 	long strong_length;
+	long hash_type;
 	rs_stats_t stats;
 	rs_result ret;
 };

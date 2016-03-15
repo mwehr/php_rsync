@@ -1,9 +1,9 @@
 /*= -*- c-basic-offset: 4; indent-tabs-mode: nil; -*-
  *
  * librsync -- the library for network deltas
- * $Id: types.h,v 1.2 2002/06/29 19:47:42 wayned Exp $
+ * $Id$
  * 
- * Copyright (C) 2001 by Martin Pool <mbp@samba.org>
+ * Copyright (C) 2001 by Martin Pool <mbp@sourcefrog.net>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License

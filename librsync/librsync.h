@@ -1,20 +1,20 @@
 /*=                    -*- c-basic-offset: 4; indent-tabs-mode: nil; -*-
  *
  * librsync -- library for network deltas
- * 
- * Copyright (C) 2000, 2001 by Martin Pool <mbp@samba.org>
- * Copyright (C) 2003 by Donovan Baarda <abo@minkirri.apana.org.au> 
- * 
+ *
+ * Copyright 2000, 2001, 2014, 2015 by Martin Pool <mbp@sourcefrog.net>
+ * Copyright (C) 2003 by Donovan Baarda <abo@minkirri.apana.org.au>
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -31,10 +31,8 @@
 /** \file librsync.h
  *
  * \brief Main public interface to librsync.
- * \author Martin Pool <mbp@samba.org>
- * \version librsync-0.9.6
- *
- * $Id: librsync.h,v 1.5 2003/12/16 00:03:40 abo Exp $
+ * \author Martin Pool <mbp@sourcefrog.net>
+ * \version librsync-1.0.0
  *
  * See \ref intro for an introduction to use of this library.
  */
@@ -43,7 +41,7 @@
 #define _RSYNC_H
 
 #include <sys/types.h>
-#include <librsync-config.h>
+#include "librsync-config.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -51,6 +49,8 @@ extern "C" {
 
 extern char const rs_librsync_version[];
 extern char const rs_licence_string[];
+
+typedef unsigned char rs_byte_t;
 
 
 /**
@@ -71,6 +71,41 @@ typedef enum {
     RS_LOG_DEBUG         = 7    /**< Debug-level messages */
 } rs_loglevel;
 
+
+
+                          /*
+                           | "The IETF already has more than enough
+                           | RFCs that codify the obvious, make
+                           | stupidity illegal, support truth,
+                           | justice, and the IETF way, and generally
+                           | demonstrate the author is a brilliant and
+                           | valuable Contributor to The Standards
+                           | Process."
+                           |     -- Vernon Schryver
+                           */
+
+
+/**
+ * A uint32 magic number, emitted in bigendian/network order at the start of
+ * librsync files.
+ **/
+typedef enum {
+    /** A delta file. At present, there's only one delta format. **/
+    RS_DELTA_MAGIC          = 0x72730236,      /* r s \2 6 */
+
+    /**
+     * A signature file with MD4 signatures.  Backward compatible with
+     * librsync < 1.0, but strongly deprecated because it creates a security
+     * vulnerability on files containing partly untrusted data. See
+     * <https://github.com/librsync/librsync/issues/5>.
+     **/
+    RS_MD4_SIG_MAGIC        = 0x72730136,      /* r s \1 6 */
+
+    /**
+     * A signature file using the BLAKE2 hash. Supported from librsync 1.0.
+     **/
+    RS_BLAKE2_SIG_MAGIC     = 0x72730137       /* r s \1 7 */
+} rs_magic_number;
 
 
 /**
@@ -125,9 +160,9 @@ typedef enum {
     RS_RUNNING  =       2,      /**< Not yet finished or blocked.
                                  * This value should never be returned
                                  * to the caller.  */
-    
+
     RS_TEST_SKIPPED =   77,     /**< Test neither passed or failed. */
-    
+
     RS_IO_ERROR =	100,    /**< Error in file or network IO. */
     RS_SYNTAX_ERROR =   101,    /**< Command line syntax error. */
     RS_MEM_ERROR =	102,    /**< Out of memory. */
@@ -166,7 +201,7 @@ typedef struct rs_stats {
     rs_long_t       lit_bytes;  /**< Number of literal bytes. */
     rs_long_t       lit_cmdbytes; /**< Number of bytes used in literal
                                    * command headers. */
-        
+
     rs_long_t       copy_cmds, copy_bytes, copy_cmdbytes;
     rs_long_t       sig_cmds, sig_bytes;
     int             false_matches;
@@ -190,12 +225,14 @@ typedef struct rs_stats {
  */
 typedef struct rs_mdfour rs_mdfour_t;
 
-#define RS_MD4_LENGTH 16
+extern const int RS_MD4_SUM_LENGTH, RS_BLAKE2_SUM_LENGTH;
+
+#define RS_MAX_STRONG_SUM_LENGTH 32
 
 typedef unsigned int rs_weak_sum_t;
-typedef unsigned char rs_strong_sum_t[RS_MD4_LENGTH];
+typedef unsigned char rs_strong_sum_t[RS_MAX_STRONG_SUM_LENGTH];
 
-void            rs_mdfour(unsigned char *out, void const *in, size_t); 
+void            rs_mdfour(unsigned char *out, void const *in, size_t);
 void            rs_mdfour_begin(/* @out@ */ rs_mdfour_t * md);
 void            rs_mdfour_update(rs_mdfour_t * md, void const *,
 				 size_t n);
@@ -278,10 +315,6 @@ struct rs_buffers_s {
  */
 typedef struct rs_buffers_s rs_buffers_t;
 
-/** Default length of strong signatures, in bytes.  The MD4 checksum
- * is truncated to this size. */
-#define RS_DEFAULT_STRONG_LEN 8
-
 /** Default block length, if not determined by any other factors. */
 #define RS_DEFAULT_BLOCK_LEN 2048
 
@@ -319,11 +352,43 @@ rs_result       rs_job_free(rs_job_t *);
 
 int             rs_accum_value(rs_job_t *, char *sum, size_t sum_len);
 
-rs_job_t *rs_sig_begin(size_t new_block_len, size_t strong_sum_len);
+/**
+ * \brief Start generating a signature.
+ *
+ * \return A new rs_job_t into which the old file data can be passed.
+ *
+ * \param sig_magic Indicates the version of signature file to generate,
+ * see rs_magic_number.
+ *
+ * \param new_block_len Size of checksum blocks.  Larger values make the
+ * signature shorter, and the delta longer.
+ *
+ * \param strong_sum_len If non-zero, truncate the strong signatures to this
+ * many bytes, to make the signature shorter.  It's recommended you leave this
+ * at zero to get the full strength.
+ **/
+rs_job_t *rs_sig_begin(size_t new_block_len,
+		       size_t strong_sum_len,
+		       rs_magic_number sig_magic);
 
 rs_job_t *rs_delta_begin(rs_signature_t *);
 
+
+/**
+ * \brief Read a signature from a file into an ::rs_signature_t structure
+ * in memory.
+ *
+ * Once there, it can be used to generate a delta to a newer version of
+ * the file.
+ *
+ * \note After loading the signatures, you must call
+ * rs_build_hash_table() before you can use them.
+ */
 rs_job_t *rs_loadsig_begin(rs_signature_t **);
+
+rs_result rs_build_hash_table(rs_signature_t* sums);
+
+
 
 /**
  * \brief Callback used to retrieve parts of the basis file.
@@ -345,8 +410,6 @@ typedef rs_result rs_copy_cb(void *opaque, rs_long_t pos,
 rs_job_t *rs_patch_begin(rs_copy_cb *, void *copy_arg);
 
 
-rs_result rs_build_hash_table(rs_signature_t* sums);
-
 
 
 #ifndef RSYNC_NO_STDIO_INTERFACE
@@ -367,7 +430,9 @@ extern int rs_inbuflen, rs_outbuflen;
 void rs_mdfour_file(FILE *in_file, char *result);
 
 rs_result rs_sig_file(FILE *old_file, FILE *sig_file,
-                      size_t block_len, size_t strong_len, rs_stats_t *); 
+                      size_t block_len, size_t strong_len,
+		      rs_magic_number sign_magic,
+		      rs_stats_t *);
 
 rs_result rs_loadsig_file(FILE *, rs_signature_t **, rs_stats_t *);
 

@@ -1,9 +1,9 @@
 /*= -*- c-basic-offset: 4; indent-tabs-mode: nil; -*-
  *
  * librsync -- the library for network deltas
- * $Id: checksum.c,v 1.35 2003/06/12 05:47:21 wayned Exp $
+ * $Id$
  * 
- * Copyright (C) 1999, 2000, 2001 by Martin Pool <mbp@samba.org>
+ * Copyright (C) 1999, 2000, 2001 by Martin Pool <mbp@sourcefrog.net>
  * Copyright (C) 1996 by Andrew Tridgell
  * Copyright (C) 1996 by Paul Mackerras
  * 
@@ -22,7 +22,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <config.h>
+#include "config.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -30,6 +30,7 @@
 
 #include "librsync.h"
 #include "checksum.h"
+#include "blake2.h"
 
 
 /* This can possibly be used to restart the checksum system in the
@@ -75,7 +76,15 @@ unsigned int rs_calc_weak_sum(void const *p, int len)
  * Since we can't retry a web transaction I'm not sure if it's very
  * useful in rproxy.
  */
-void rs_calc_strong_sum(void const *buf, size_t len, rs_strong_sum_t *sum)
+void rs_calc_md4_sum(void const *buf, size_t len, rs_strong_sum_t *sum)
 {
     rs_mdfour((unsigned char *) sum, buf, len);
+}
+
+void rs_calc_blake2_sum(void const *buf, size_t len, rs_strong_sum_t *sum)
+{
+    blake2b_state ctx;
+    blake2b_init(&ctx, RS_MAX_STRONG_SUM_LENGTH);
+    blake2b_update(&ctx, (const uint8_t *)buf, len);
+    blake2b_final(&ctx, (uint8_t *)sum, RS_MAX_STRONG_SUM_LENGTH);
 }

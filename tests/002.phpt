@@ -1,5 +1,5 @@
 --TEST--
-Test the rsync_generate_signatur function
+Test the rsync_generate_signatur (md4) function
 --SKIPIF--
 <?php 
 if (!extension_loaded("rsync")) print "skip"; ?>

@@ -1,4 +1,4 @@
-/* $Id: snprintf.h,v 1.3 2003/08/03 14:36:09 abo Exp $ */
+/* $Id$ */
 
 /* Some platforms don't have one or both of these functions.
  * MSVC has _snprintf and _vsnprintf functions instead.

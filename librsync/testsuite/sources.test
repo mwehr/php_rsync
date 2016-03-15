@@ -1,10 +1,10 @@
-#! /bin/sh
+#! /bin/sh -e
 
 # librsync -- the library for network deltas
-# $Id: sources.test,v 1.1 2002/01/25 21:08:26 bje Exp $
-# 
-# Copyright (C) 2001 by Martin Pool <mbp@samba.org>
-# 
+# Copyright (C) 2001, 2014 by Martin Pool <mbp@sourcefrog.net>
+
+# sources.test: Run three-way tests on all librsync source files.
+
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public License
 # as published by the Free Software Foundation; either version 2.1 of
@@ -19,6 +19,7 @@
 # License along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+. $srcdir/testcommon.sh
 block_len=200
 for buf in $bufsizes
 do
@@ -29,9 +30,12 @@ do
             test ! -r $new && continue
             test ! -r $old && continue
             test -n "$stats" && echo $old $new
-            triple_test $buf $old $new 
-            triple_test $buf $new $old
-            countdown
+
+	    for hashopt in '' -Hmd4 -Hblake2
+	    do
+		triple_test $buf $old $new $hashopt
+		triple_test $buf $new $old $hashopt
+	    done
         done
     done
 done
